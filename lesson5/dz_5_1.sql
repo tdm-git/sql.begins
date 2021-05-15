@@ -65,12 +65,52 @@ INSERT IGNORE INTO storehouses_products (name, value) VALUES
 ('товар6', 1);
 SELECT * from storehouses_products;
 
--- сформируем вывод согласно требованиям задачи
+-- сформируем вывод результата по требованиям задачи
 SELECT * FROM storehouses_products order by case when VALUE = 0 then 99999999 end, value;
 
 -- 4.(по желанию) Из таблицы users необходимо извлечь пользователей, родившихся в августе и мае. Месяцы заданы в виде списка английских названий (may, august)
 
+-- создадим таблицу согласно условиям дз
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Имя покупателя',
+  birthday_at DATE COMMENT 'Дата рождения',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) COMMENT = 'Покупатели';
+INSERT INTO users (name, birthday_at) VALUES
+  ('Геннадий', '1990-10-05'),
+  ('Наталья', '1984-11-12'),
+  ('Александр', '1985-05-20'),
+  ('Сергей', '1988-02-14'),
+  ('Иван', '1998-01-12'),
+  ('Мария', '1992-08-29');
+
+-- сформируем вывод результата по требованиям задачи 
+SELECT 
+	name, 
+	birthday_at 
+FROM users 
+WHERE DATE_FORMAT(birthday_at, "%M") IN ('may','august');
 
 -- 5.(по желанию) Из таблицы catalogs извлекаются записи при помощи запроса. SELECT * FROM catalogs WHERE id IN (5, 1, 2); Отсортируйте записи в порядке, заданном в списке IN.
 
+-- создадим таблицу согласно условиям дз
+CREATE TABLE catalogs (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) COMMENT 'Название раздела',
+  UNIQUE unique_name(name(10))
+) COMMENT = 'Разделы интернет-магазина';
+INSERT INTO catalogs VALUES
+  (NULL, 'Процессоры'),
+  (NULL, 'Материнские платы'),
+  (NULL, 'Видеокарты'),
+  (NULL, 'Жесткие диски'),
+  (NULL, 'Оперативная память');
+  
+ -- сформируем вывод результата по требованиям задачи 
+ SELECT * 
+ FROM catalogs 
+ WHERE id in (5, 1, 2) 
+ ORDER BY FIELD(id, 5, 1, 2);
 
