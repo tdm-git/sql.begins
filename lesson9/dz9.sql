@@ -200,16 +200,34 @@ END
 Ситуация, когда оба поля принимают неопределенное значение NULL неприемлема. Используя триггеры, добейтесь того, чтобы одно из этих полей или оба поля были заполнены. 
 При попытке присвоить полям NULL-значение необходимо отменить операцию. */
 
-CREATE DEFINER=`root`@`%` TRIGGER `products_test` BEFORE INSERT ON `products` FOR EACH ROW BEGIN
-  IF NEW.name is NULL THEN
-	  IF NEW.desription is NULL THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Не заполнены поля name и description';
-	  END IF;
+-- добавил триггер на заполненость обоих полей, если оба не заполнены - вернется сообщение с ошибкой
+CREATE TRIGGER `products_test` BEFORE INSERT ON `products` FOR EACH ROW BEGIN
+  IF COALESCE(NEW.name, NEW.desription) is NULL THEN  -- только если оба занчения NULL
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Не заполнены поля name и description';
   END IF;
 END
+-- по условиям задачи непонятно, но если нужно исключить такую ситуацию и при редактировании то нужен еще один аналогичный триггер - BEFORE UPDATE ON `products`
 
 /*3.(по желанию) Напишите хранимую функцию для вычисления произвольного числа Фибоначчи. Числами Фибоначчи называется последовательность в которой
  число равно сумме двух предыдущих чисел. Вызов функции FIBONACCI(10) должен возвращать число 55. */
 
-
+-- за основу взял цикл для нахождения чисел фибоначчи (из интеренета) и переписал его в синтаксисе mysql
+CREATE FUNCTION vk.Fib (value INT)
+	RETURNS INT DETERMINISTIC
+BEGIN
+	DECLARE Counter INT; 
+	DECLARE One INT;
+	DECLARE Two INT;	
+	SET Two = 1;	
+	IF (value > 2) THEN
+		SET Counter = 3;
+		SET One = 1;			
+		WHILE value >= Counter DO
+			SET Two = One + Two;
+			SET One = Two - One;
+			SET Counter = Counter + 1;
+		END WHILE;	
+	END IF;	   
+	RETURN Two;	
+END
 
