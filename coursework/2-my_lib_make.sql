@@ -2,8 +2,8 @@ CREATE DATABASE IF NOT EXISTS my_library;
 
 USE my_library; 
 /* 
--- из-за использования внешних ключей разный порядок создания и удаления таблиц
--- служебный блок для удаления таблиц 
+-- РёР·-Р·Р° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РІРЅРµС€РЅРёС… РєР»СЋС‡РµР№ СЂР°Р·РЅС‹Р№ РїРѕСЂСЏРґРѕРє СЃРѕР·РґР°РЅРёСЏ Рё СѓРґР°Р»РµРЅРёСЏ С‚Р°Р±Р»РёС†
+-- СЃР»СѓР¶РµР±РЅС‹Р№ Р±Р»РѕРє РґР»СЏ СѓРґР°Р»РµРЅРёСЏ С‚Р°Р±Р»РёС† 
 USE my_library; 
 
 DROP TABLE IF EXISTS outer_links;
@@ -22,105 +22,105 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS writers;
 DROP TABLE IF EXISTS publishers; */
 
--- основной скрипт по созданию таблиц
--- 2. таблица авторов
+-- РѕСЃРЅРѕРІРЅРѕР№ СЃРєСЂРёРїС‚ РїРѕ СЃРѕР·РґР°РЅРёСЋ С‚Р°Р±Р»РёС†
+-- 2. С‚Р°Р±Р»РёС†Р° Р°РІС‚РѕСЂРѕРІ
 DROP TABLE IF EXISTS writers;
 CREATE TABLE writers (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "ФИО",
-  `text` TEXT COMMENT "Краткая биография",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) COMMENT "Р¤РРћ",
+  `text` TEXT COMMENT "РљСЂР°С‚РєР°СЏ Р±РёРѕРіСЂР°С„РёСЏ",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   UNIQUE unique_name(name(50))
-) COMMENT "Справочник авторы"; 
--- 3. таблица издательств
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє Р°РІС‚РѕСЂС‹"; 
+-- 3. С‚Р°Р±Р»РёС†Р° РёР·РґР°С‚РµР»СЊСЃС‚РІ
 DROP TABLE IF EXISTS publishers;
 CREATE TABLE publishers (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "Наименование",
-  `text` TEXT COMMENT "Описание",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) COMMENT "РќР°РёРјРµРЅРѕРІР°РЅРёРµ",
+  `text` TEXT COMMENT "РћРїРёСЃР°РЅРёРµ",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   UNIQUE unique_name(name(50))
-) COMMENT "Справочник издательства"; 
--- 1.основная таблица книг
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє РёР·РґР°С‚РµР»СЊСЃС‚РІР°"; 
+-- 1.РѕСЃРЅРѕРІРЅР°СЏ С‚Р°Р±Р»РёС†Р° РєРЅРёРі
 DROP TABLE IF EXISTS books;
 CREATE TABLE books (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "Наименование",
-  id_writer INT UNSIGNED NOT NULL COMMENT "Автор(ы)",
-  id_publisher INT UNSIGNED NOT NULL COMMENT "Издательство",
-  `year` YEAR NOT NULL COMMENT "Год выхода",
-  book_size INT UNSIGNED COMMENT "Размер(страниц)",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) COMMENT "РќР°РёРјРµРЅРѕРІР°РЅРёРµ",
+  id_writer INT UNSIGNED NOT NULL COMMENT "РђРІС‚РѕСЂ(С‹)",
+  id_publisher INT UNSIGNED NOT NULL COMMENT "РР·РґР°С‚РµР»СЊСЃС‚РІРѕ",
+  `year` YEAR NOT NULL COMMENT "Р“РѕРґ РІС‹С…РѕРґР°",
+  book_size INT UNSIGNED COMMENT "Р Р°Р·РјРµСЂ(СЃС‚СЂР°РЅРёС†)",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   KEY index_of_year (`year`),
   FOREIGN KEY (id_writer) REFERENCES writers(id),
   FOREIGN KEY (id_publisher) REFERENCES publishers(id)
-) COMMENT "Справочник книги";
--- 4. таблица интернет-ссылок
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє РєРЅРёРіРё";
+-- 4. С‚Р°Р±Р»РёС†Р° РёРЅС‚РµСЂРЅРµС‚-СЃСЃС‹Р»РѕРє
 DROP TABLE IF EXISTS outer_links;
 CREATE TABLE outer_links (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
-  link TEXT COMMENT "Ссылка на веб-страницу",
-  site VARCHAR(255) COMMENT "Сайт-источник",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  id_book INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РєРЅРёРіСѓ",
+  link TEXT COMMENT "РЎСЃС‹Р»РєР° РЅР° РІРµР±-СЃС‚СЂР°РЅРёС†Сѓ",
+  site VARCHAR(255) COMMENT "РЎР°Р№С‚-РёСЃС‚РѕС‡РЅРёРє",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   FOREIGN KEY (id_book) REFERENCES books(id)  
-) COMMENT "Справочник ссылок";
--- 6. таблица типов файлов (обложка, текст, аудиокнига и пр.)
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє СЃСЃС‹Р»РѕРє";
+-- 6. С‚Р°Р±Р»РёС†Р° С‚РёРїРѕРІ С„Р°Р№Р»РѕРІ (РѕР±Р»РѕР¶РєР°, С‚РµРєСЃС‚, Р°СѓРґРёРѕРєРЅРёРіР° Рё РїСЂ.)
 DROP TABLE IF EXISTS type_files;
 CREATE TABLE type_files (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "Наименование",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) COMMENT "РќР°РёРјРµРЅРѕРІР°РЅРёРµ",
   UNIQUE unique_name(name(50))
-) COMMENT "Справочник типов файлов"; 
--- 5. таблица файлов
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє С‚РёРїРѕРІ С„Р°Р№Р»РѕРІ"; 
+-- 5. С‚Р°Р±Р»РёС†Р° С„Р°Р№Р»РѕРІ
 DROP TABLE IF EXISTS books_files;
 CREATE TABLE books_files (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
-  id_file_type INT UNSIGNED NOT NULL COMMENT "Ссылка на тип файла",
-  name VARCHAR(255) COMMENT "Описание",
-  link TEXT COMMENT "Полный путь до файла",
-  extension VARCHAR(255) COMMENT "Расширение",
-  `size` INT COMMENT "Размер файла в Мб",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  id_book INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РєРЅРёРіСѓ",
+  id_file_type INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° С‚РёРї С„Р°Р№Р»Р°",
+  name VARCHAR(255) COMMENT "РћРїРёСЃР°РЅРёРµ",
+  link TEXT COMMENT "РџРѕР»РЅС‹Р№ РїСѓС‚СЊ РґРѕ С„Р°Р№Р»Р°",
+  extension VARCHAR(255) COMMENT "Р Р°СЃС€РёСЂРµРЅРёРµ",
+  `size` INT COMMENT "Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° РІ РњР±",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   FOREIGN KEY (id_book) REFERENCES books(id),
   FOREIGN KEY (id_file_type) REFERENCES type_files(id)
-) COMMENT "Справочник файлов"; 
--- 8. таблица видов тэгов
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє С„Р°Р№Р»РѕРІ"; 
+-- 8. С‚Р°Р±Р»РёС†Р° РІРёРґРѕРІ С‚СЌРіРѕРІ
 DROP TABLE IF EXISTS hashtags_table;
 CREATE TABLE hashtags_table (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) NOT NULL COMMENT "Наименование",
-  group_name VARCHAR(255) COMMENT "Имя группы",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) NOT NULL COMMENT "РќР°РёРјРµРЅРѕРІР°РЅРёРµ",
+  group_name VARCHAR(255) COMMENT "РРјСЏ РіСЂСѓРїРїС‹",
   UNIQUE unique_name(name(100))
-) COMMENT "Справочник видов тэгов"; -- 7. таблица тэгов книг 
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє РІРёРґРѕРІ С‚СЌРіРѕРІ"; -- 7. С‚Р°Р±Р»РёС†Р° С‚СЌРіРѕРІ РєРЅРёРі 
 DROP TABLE IF EXISTS hashtags;
 CREATE TABLE hashtags (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
-  id_tag INT UNSIGNED NOT NULL COMMENT "Ссылка на тэг",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  id_book INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РєРЅРёРіСѓ",
+  id_tag INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° С‚СЌРі",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   FOREIGN KEY (id_book) REFERENCES books(id),
   FOREIGN KEY (id_tag) REFERENCES hashtags_table(id)
-) COMMENT "Справочник тэгов"; 
--- 10. таблица видов комментариев
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє С‚СЌРіРѕРІ"; 
+-- 10. С‚Р°Р±Р»РёС†Р° РІРёРґРѕРІ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ
 DROP TABLE IF EXISTS comments_type;
 CREATE TABLE comments_type (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "Наименование",
-  `text` TEXT COMMENT "Описание...",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(255) COMMENT "РќР°РёРјРµРЅРѕРІР°РЅРёРµ",
+  `text` TEXT COMMENT "РћРїРёСЃР°РЅРёРµ...",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   UNIQUE unique_name(name(100))
-) COMMENT "Справочник видов комментариев"; 
--- 9. таблица текстовых комментариев (заметки, цитаты, оценки, оглавление, кр.описание и пр.) 
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє РІРёРґРѕРІ РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ"; 
+-- 9. С‚Р°Р±Р»РёС†Р° С‚РµРєСЃС‚РѕРІС‹С… РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ (Р·Р°РјРµС‚РєРё, С†РёС‚Р°С‚С‹, РѕС†РµРЅРєРё, РѕРіР»Р°РІР»РµРЅРёРµ, РєСЂ.РѕРїРёСЃР°РЅРёРµ Рё РїСЂ.) 
 DROP TABLE IF EXISTS comments;
 CREATE TABLE comments (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
-  id_type INT UNSIGNED NOT NULL COMMENT "Ссылка на вид",
-  `text` TEXT COMMENT "Содержание...",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  id_book INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РєРЅРёРіСѓ",
+  id_type INT UNSIGNED NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РІРёРґ",
+  `text` TEXT COMMENT "РЎРѕРґРµСЂР¶Р°РЅРёРµ...",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё",
   FOREIGN KEY (id_book) REFERENCES books(id),
   FOREIGN KEY (id_type) REFERENCES comments_type(id)
-) COMMENT "Справочник комментариев"; 
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє РєРѕРјРјРµРЅС‚Р°СЂРёРµРІ"; 
 
