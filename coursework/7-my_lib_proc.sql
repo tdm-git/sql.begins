@@ -1,57 +1,16 @@
 use my_library;
--- основная таблица книг 
-select 
-b.name as book_name,
-w.name as writer,
-b.`year`,
-CONCAT('#',ht.group_name,' ',ht.name) as tag 
-From books b
-join writers w on b.id_writer = w.id
-join hashtags h on b.id = h.id_book 
-join hashtags_table ht on h.id_tag = ht.id 
-Where 
-    b.name LIKE '%Python%'
-ORDER by b.`year` ;
--- таблица по автору -- добавить теги
-SELECT 
-w.name,
-b.`year`,
-b.name 
-From writers w
-join books b on b.id_writer = w.id
-Where 
-    -- w.id = 28
-    w.name LIKE '%Hawkins%'
-ORDER by b.`year`;
--- таблица по книге -- добавить теги
-select 
-'book',
-b.name
-from books b 
-where 
-    b.id = 1518
-UNION 
-SELECT
-'link',
-l.link 
-from outer_links l 
-where 
-    l.id_book = 1518
-UNION 
-SELECT
-'file',
-bf.link 
-from books_files bf 
-where 
-    bf.id_book = 1518
-UNION 
-SELECT
-'comment',
-c.`text` 
-from comments c 
-where 
-    c.id_book = 1518;
--- таблица хештегов
-select * 
-from hashtags_table ht;
 
+-- С„СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂРєРё РЅР°Р»РёС‡РёСЏ С„Р°Р№Р»Р° РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С‚РёРїР°
+-- РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ Р·Р°РїСЂРѕСЃРµ РґР»СЏ view catalog
+CREATE FUNCTION my_library.has_file(target_id INT, target_type_id INT)
+RETURNS BOOLEAN READS SQL DATA
+BEGIN
+	RETURN EXISTS(SELECT 1 FROM books_files WHERE id_book = target_id AND id_file_type = target_type_id);
+END
+
+-- С‚СЂРёРіРµСЂ - РґРѕР·Р°РїРѕР»РЅРµРЅРёСЏ РїРѕР»СЏ Р±РёРѕРіСЂР°С„РёРё Сѓ РїРёСЃР°С‚РµР»РµР№
+CREATE DEFINER=`root`@`%` TRIGGER `biografy` BEFORE INSERT ON `writers` FOR EACH ROW BEGIN
+  IF NEW.`text` is NULL THEN  
+	SET NEW.`text` = ' is a computer programmer who has spent much of the last 20 years writing books about programming languages.';
+  END IF;
+END
