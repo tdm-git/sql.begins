@@ -1,57 +1,69 @@
 use my_library;
--- основная таблица книг 
-select 
-b.name as book_name,
-w.name as writer,
-b.`year`,
-CONCAT('#',ht.group_name,' ',ht.name) as tag 
-From books b
-join writers w on b.id_writer = w.id
-join hashtags h on b.id = h.id_book 
-join hashtags_table ht on h.id_tag = ht.id 
-Where 
-    b.name LIKE '%Python%'
-ORDER by b.`year` ;
--- таблица по автору -- добавить теги
-SELECT 
-w.name,
-b.`year`,
-b.name 
-From writers w
-join books b on b.id_writer = w.id
-Where 
-    -- w.id = 28
-    w.name LIKE '%Hawkins%'
-ORDER by b.`year`;
--- таблица по книге -- добавить теги
-select 
-'book',
-b.name
-from books b 
-where 
-    b.id = 1518
-UNION 
-SELECT
-'link',
-l.link 
-from outer_links l 
-where 
-    l.id_book = 1518
-UNION 
-SELECT
-'file',
-bf.link 
-from books_files bf 
-where 
-    bf.id_book = 1518
-UNION 
-SELECT
-'comment',
-c.`text` 
-from comments c 
-where 
-    c.id_book = 1518;
--- таблица хештегов
-select * 
-from hashtags_table ht;
 
+
+SELECT 
+	b.name as book_name,
+	w.name as writer,
+	b.`year`,
+	ht.name as tag,
+	has_file(b.id, 1) as has_photo,
+	has_file(b.id, 2) as has_text,
+	b.book_size,
+	b.date_create 
+FROM books b
+LEFT JOIN writers w ON b.id_writer = w.id
+LEFT JOIN hashtags h ON b.id = h.id_book
+LEFT JOIN hashtags_table ht ON ht.id = h.id_tag
+ORDER BY b.`year`;
+
+
+SELECT 
+	ht.group_name,
+	ht.name as tag,
+	b.name as book_name,
+	b.`year`
+FROM books b
+LEFT JOIN hashtags h ON b.id = h.id_book
+LEFT JOIN hashtags_table ht ON ht.id = h.id_tag
+/*WHERE 
+	ht.name = '#python' */
+ORDER BY ht.group_name, ht.name, b.`year`;
+
+-- РґРѕР±Р°РІРёС‚СЊ С‚РµРіРё
+SELECT 
+	'book', b.name
+	FROM books b 
+	WHERE b.id = 1518
+UNION 
+SELECT
+	'link', l.link 
+	FROM outer_links l 
+	WHERE l.id_book = 1518
+UNION 
+SELECT
+	'file',bf.link 
+	FROM books_files bf 
+	WHERE bf.id_book = 1518
+UNION 
+SELECT
+	'comment',c.`text` 
+	FROM comments c 
+	WHERE c.id_book = 1518;
+
+SELECT 
+	w.name,
+	b.`year`,
+	b.name 
+FROM writers w
+JOIN books b on b.id_writer = w.id
+WHERE 
+    -- w.id = 28
+    w.name LIKE '%Adam%'
+ORDER by b.`year`;	
+
+
+CREATE FUNCTION my_library.has_file(target_id INT, target_type_id INT)
+RETURNS BOOLEAN READS SQL DATA
+BEGIN
+	RETURN EXISTS(SELECT 1 FROM books_files WHERE id_book = target_id AND id_file_type = target_type_id);
+END
