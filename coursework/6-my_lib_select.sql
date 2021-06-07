@@ -1,7 +1,5 @@
 use my_library;
 
-use my_library;
-
 -- статистика по категориям
 -- количество книг 
 SELECT
@@ -20,9 +18,9 @@ SELECT
 UNION 
 SELECT 
 	'book','writer', w.name
-	FROM books b 
-	LEFT JOIN writers w ON b.id_writer = w.id
-	WHERE b.id = 1518
+	FROM books_writer wb 
+	LEFT JOIN writers w ON wb.id_writer = w.id
+	WHERE wb.id_book = 1518
 UNION 
 SELECT 
 	'book','year', b.year
@@ -57,9 +55,10 @@ SELECT
 	b.`year`,
 	b.name,
 	ht.name as tag
-FROM writers w
-LEFT JOIN books b on b.id_writer = w.id
-LEFT JOIN hashtags h on b.id  = h.id_book 
+FROM books_writer wb
+LEFT JOIN writers w on wb.id_writer = w.id 
+LEFT JOIN books b on wb.id_book = b.id 
+LEFT JOIN hashtags h on wb.id_book  = h.id_book 
 LEFT JOIN hashtags_table ht on ht.id  = h.id_tag
 -- пример возможных отборов - по значению, списку, неточному совпадению
 WHERE 

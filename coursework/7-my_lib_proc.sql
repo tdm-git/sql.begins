@@ -10,7 +10,7 @@ END
 
 -- тригер - дозаполнения поля биографии у писателей
 CREATE DEFINER=`root`@`%` TRIGGER `biografy` BEFORE INSERT ON `writers` FOR EACH ROW BEGIN
-  IF NEW.`text` is NULL THEN  
-	SET NEW.`text` = ' is a computer programmer who has spent much of the last 20 years writing books about programming languages.';
+  IF NEW.about is NULL THEN  
+	SET NEW.about = ' is a computer programmer who has spent much of the last 20 years writing books about programming languages.';
   END IF;
 END
