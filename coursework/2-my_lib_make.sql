@@ -17,21 +17,14 @@ DROP TABLE IF EXISTS hashtags_table;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS comments_type;
 
+DROP TABLE IF EXISTS books_writer;
+DROP TABLE IF EXISTS writers;
+
 DROP TABLE IF EXISTS books;
 
-DROP TABLE IF EXISTS writers;
 DROP TABLE IF EXISTS publishers; */
 
 -- основной скрипт по созданию таблиц
--- 2. таблица авторов
-DROP TABLE IF EXISTS writers;
-CREATE TABLE writers (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(255) COMMENT "ФИО",
-  `text` TEXT COMMENT "Краткая биография",
-  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
-  UNIQUE unique_name(name(50))
-) COMMENT "Справочник авторы"; 
 -- 3. таблица издательств
 DROP TABLE IF EXISTS publishers;
 CREATE TABLE publishers (
@@ -46,21 +39,38 @@ DROP TABLE IF EXISTS books;
 CREATE TABLE books (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
   name VARCHAR(255) COMMENT "Наименование",
-  id_writer INT UNSIGNED NOT NULL COMMENT "Автор(ы)",
   id_publisher INT UNSIGNED NOT NULL COMMENT "Издательство",
   `year` YEAR NOT NULL COMMENT "Год выхода",
   book_size INT UNSIGNED COMMENT "Размер(страниц)",
   date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
   KEY index_of_year (`year`),
-  FOREIGN KEY (id_writer) REFERENCES writers(id),
   FOREIGN KEY (id_publisher) REFERENCES publishers(id)
 ) COMMENT "Справочник книги";
+-- 2. таблица авторов
+DROP TABLE IF EXISTS writers;
+CREATE TABLE writers (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
+  name VARCHAR(255) COMMENT "ФИО",
+  about TEXT COMMENT "Краткая биография",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  UNIQUE unique_name(name(50))
+) COMMENT "Справочник авторы"; 
+-- 11. таблица авторов книг
+DROP TABLE IF EXISTS books_writer;
+CREATE TABLE books_writer (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
+  id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
+  id_writer INT UNSIGNED NOT NULL COMMENT "Ссылка на автора",
+  date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
+  FOREIGN KEY (id_book) REFERENCES books(id),
+  FOREIGN KEY (id_writer) REFERENCES writers(id)
+) COMMENT "Справочник авторов книг"; 
 -- 4. таблица интернет-ссылок
 DROP TABLE IF EXISTS outer_links;
 CREATE TABLE outer_links (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
   id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
-  link TEXT COMMENT "Ссылка на веб-страницу",
+  link VARCHAR(1000) COMMENT "Ссылка на веб-страницу",
   site VARCHAR(255) COMMENT "Сайт-источник",
   date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
   FOREIGN KEY (id_book) REFERENCES books(id)  
@@ -79,7 +89,7 @@ CREATE TABLE books_files (
   id_book INT UNSIGNED NOT NULL COMMENT "Ссылка на книгу",
   id_file_type INT UNSIGNED NOT NULL COMMENT "Ссылка на тип файла",
   name VARCHAR(255) COMMENT "Описание",
-  link TEXT COMMENT "Полный путь до файла",
+  link VARCHAR(600) COMMENT "Полный путь до файла",
   extension VARCHAR(255) COMMENT "Расширение",
   `size` INT COMMENT "Размер файла в Мб",
   date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
@@ -93,7 +103,8 @@ CREATE TABLE hashtags_table (
   name VARCHAR(255) NOT NULL COMMENT "Наименование",
   group_name VARCHAR(255) COMMENT "Имя группы",
   UNIQUE unique_name(name(100))
-) COMMENT "Справочник видов тэгов"; -- 7. таблица тэгов книг 
+) COMMENT "Справочник видов тэгов"; 
+-- 7. таблица тэгов книг 
 DROP TABLE IF EXISTS hashtags;
 CREATE TABLE hashtags (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
@@ -108,7 +119,6 @@ DROP TABLE IF EXISTS comments_type;
 CREATE TABLE comments_type (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
   name VARCHAR(255) COMMENT "Наименование",
-  `text` TEXT COMMENT "Описание...",
   date_create DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания записи",
   UNIQUE unique_name(name(100))
 ) COMMENT "Справочник видов комментариев"; 
