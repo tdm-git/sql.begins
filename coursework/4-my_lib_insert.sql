@@ -233,9 +233,9 @@ INSERT INTO writers (id, name, about) VALUES
 -- *****************************************************************************
 SELECT * from books_writer;
 INSERT INTO books_writer (id_book, id_writer) VALUES
-(1480,3),
-(1476,1),
 (1480,112),
+(1476,1),
+(1480,3),
 (1483,5),
 (1486,7),
 (1489,8),
@@ -282,6 +282,8 @@ INSERT INTO books_writer (id_book, id_writer) VALUES
 (1573,46),
 (1573,126),
 (1573,127),
+(1573,122),
+(1576,28),
 (1579,50),
 (1583,51),
 (1585,53),
@@ -312,6 +314,7 @@ INSERT INTO books_writer (id_book, id_writer) VALUES
 (1640,81),
 (1640,132),
 (1643,82),
+(1644,115),
 (1644,133),
 (1646,84),
 (1646,134),
@@ -335,6 +338,7 @@ INSERT INTO books_writer (id_book, id_writer) VALUES
 (1676,101),
 (1676,139),
 (1676,140),
+(1679,62),
 (1682,103),
 (1682,141),
 (1682,142),
